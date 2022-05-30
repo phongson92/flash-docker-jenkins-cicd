@@ -1,21 +1,21 @@
 pipeline {
 
-  agent none
+  agent none //để agent none để chạy từng agent. Từng stages riêng biệt
 
   environment {
-    DOCKER_IMAGE = "nhtua/flask-docker"
+    DOCKER_IMAGE = "phongson92/flask-docker" // biến môi trường
   }
 
   stages {
     stage("Test") {
       agent {
           docker {
-            image 'python:3.8-slim-buster'
-            args '-u 0:0 -v /tmp:/root/.cache'
+            image 'python:3.8-slim-buster' //image ko có sẵn user jenkin
+            args '-u 0:0 -v /tmp:/root/.cache' //-u 0:0 để khai báo user root ;-v... để mount thư mục cache ra /tmp, khi poetry install thì sẽ lưu vào thư mục cache khi build lại sẽ nhanh hơn
           }
       }
       steps {
-        sh "pip install poetry"
+        sh "pip install poetry" //install nmp vào hệ thống trước
         sh "poetry install"
         sh "poetry run pytest"
       }
